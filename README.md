@@ -51,9 +51,4 @@ assign full = (wr_ptr_gray ==
                {~rd_ptr_gray_sync2[ADDR_WIDTH:ADDR_WIDTH-1],
                  rd_ptr_gray_sync2[ADDR_WIDTH-2:0]});
 
----
-##  Tools Used
-Xilinx Vivado – Design, synthesis, implementation, and simulation
-
-Verilog HDL – Hardware description language for implementation
 
