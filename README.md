@@ -1,49 +1,70 @@
+Asynchronous FIFO in Verilog
+Overview
+This project implements an Asynchronous FIFO (First In First Out) buffer in Verilog HDL with Gray code pointer synchronization to handle clock domain crossing. It supports configurable data width and depth using parameters and includes full/empty flag logic.
 
-# Asynchronous FIFO in Verilog
+Features
+Parameterized DATA_WIDTH and ADDR_WIDTH.
 
-## 📌 Overview
-This project implements an **Asynchronous FIFO** in Verilog, designed to safely transfer data between two independent clock domains (`wr_clk` and `rd_clk`).  
-It uses **binary-to-Gray conversion** for pointer synchronization and supports configurable data width and FIFO depth.
+Binary to Gray code conversion for pointer synchronization.
 
----
+Full and empty detection.
 
-## ✨ Features
-- **Fully parameterized**: Configurable `DATA_WIDTH` and `ADDR_WIDTH`
-- **Dual-clock support**: Separate write and read clocks
-- **Binary-to-Gray pointer conversion** for metastability protection
-- **Full & Empty flag generation** with safe clock domain crossing
-- **Synthesizable** for FPGA deployment (tested on Xilinx boards)
-- **Simulation testbench** included (covers full condition)
+Synchronous write and read logic for separate clock domains.
 
----
+Testbench included for simulation.
 
-## 🛠 Parameters
-| Parameter     | Description                              | Example |
-|---------------|------------------------------------------|---------|
-| `DATA_WIDTH`  | Width of the data word                   | 8       |
-| `ADDR_WIDTH`  | Address width for FIFO depth calculation | 4       |
-| `DEPTH`       | FIFO depth = `2^ADDR_WIDTH`              | 16      |
+File Structure
+bash
+Copy
+Edit
+├── src/
+│   ├── async_fifo.v          # Main FIFO module
+│   ├── async_fifo_tb.v       # Testbench
+├── constraints/
+│   ├── fifo_constraints.xdc  # FPGA pin mapping
+├── README.md                 # Project documentation
+Tools Used
+Xilinx Vivado – for synthesis, implementation, simulation, and bitstream generation.
 
----
+Hardware Description Language Used
+Verilog HDL
 
-## 🔍 How It Works
-1. **Write Side**:
-   - Data is written when `wr_en` is high and FIFO is not `full`.
-   - Write pointer is maintained in **binary** and converted to **Gray** code for safe synchronization.
+How It Works
+The FIFO uses two separate pointers (write pointer & read pointer) in Gray code format to avoid metastability issues during clock domain crossing.
 
-2. **Read Side**:
-   - Data is read when `rd_en` is high and FIFO is not `empty`.
-   - Read pointer follows the same binary-to-Gray synchronization process.
+Full condition:
 
-3. **Full Detection**:
-   - The FIFO is `full` when the write pointer in Gray code equals the read pointer (Gray) with the **two MSBs inverted**.
+verilog
+Copy
+Edit
+assign full = (wr_ptr_gray == {~rd_ptr_gray_sync2[ADDR_WIDTH:ADDR_WIDTH-1],
+                               rd_ptr_gray_sync2[ADDR_WIDTH-2:0]});
+Empty condition:
 
----
+verilog
+Copy
+Edit
+assign empty = (wr_ptr_gray_sync2 == rd_ptr_gray);
+Simulation
+To run the testbench:
 
-## 📜 Example Full Condition
-```verilog
-assign full = (wr_ptr_gray == 
-               {~rd_ptr_gray_sync2[ADDR_WIDTH:ADDR_WIDTH-1],
-                 rd_ptr_gray_sync2[ADDR_WIDTH-2:0]});
+Open Vivado or any Verilog simulator.
+
+Add async_fifo.v and async_fifo_tb.v.
+
+Run the simulation and observe the waveforms for write/read operations.
+
+FPGA Implementation
+Create a Vivado project.
+
+Add async_fifo.v to design sources.
+
+Add fifo_constraints.xdc to constraints.
+
+Run synthesis, implementation, and generate the bitstream.
+
+Program the FPGA.
+
+
 
 
