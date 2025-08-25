@@ -69,6 +69,9 @@ Run synthesis, implementation, and generate the bitstream.
 
 Program the FPGA.
 
+<img width="1920" height="1080" alt="Screenshot 2025-08-25 171849" src="https://github.com/user-attachments/assets/2b6abdee-55fa-4fb9-90fd-49f8f7f1f20d" />
+Here is the waveform generated for the testbench used.
+
 
 
 
